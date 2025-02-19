@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MvcUnitTesting_dotnet8.Models;
 using System.Diagnostics;
+using Tracker.WebAPIClient;
 
 namespace MvcUnitTesting_dotnet8.Controllers
 {
@@ -11,15 +12,32 @@ namespace MvcUnitTesting_dotnet8.Controllers
 
         public HomeController(IRepository<Book> bookRepo, ILogger<HomeController> logger)
         {
+            ActivityAPIClient.Track(StudentID: "S00233992",
+                StudentName: "Vlad Khokha", activityName: "Rad302 2025 Week 2 Lab 1", Task: "Running initial tests");
+
             repository = bookRepo;
             _logger = logger;
         }
-        
-        public IActionResult Index()
+
+        public IActionResult Index(string genre)
         {
+            if (string.IsNullOrEmpty(genre))
+            {
+                genre = "All Genres";  // Default to "All Genres" if no genre is provided
+            }
+
             var books = repository.GetAll();
-            return View(books);
+
+            // If a genre is provided, filter the books based on genre
+            if (!string.IsNullOrEmpty(genre) && genre != "All Genres")
+            {
+                books = books.Where(b => b.Genre.Equals(genre, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            ViewData["Genre"] = genre;  // Pass genre to the view
+            return View(books);  // Return filtered list of books
         }
+
 
         public IActionResult Privacy()
         {
