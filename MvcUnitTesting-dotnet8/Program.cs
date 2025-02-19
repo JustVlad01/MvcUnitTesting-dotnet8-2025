@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MvcUnitTesting_dotnet8.Models;
+using Tracker.WebAPIClient;
 
 namespace MvcUnitTesting_dotnet8
 {
@@ -19,19 +20,24 @@ namespace MvcUnitTesting_dotnet8
 
             var app = builder.Build();
 
+            // Call the ActivityAPIClient.Track method here
+            ActivityAPIClient.Track(
+                StudentID: "s00233992",
+                StudentName: "vlad khokha",
+                activityName: "Rad302 2025 Week 2 Lab 1",
+                Task: "Running Week 2 App"
+            );
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.MapControllerRoute(
